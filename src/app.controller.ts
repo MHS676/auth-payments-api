@@ -1,12 +1,17 @@
 import { Controller, Get } from '@nestjs/common';
-import { AppService } from './app.service';
+import { InjectConnection } from '@nestjs/mongoose';
+import { Connection } from 'mongoose';
 
-@Controller()
+@Controller('health')
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  getHello(): any {
+    throw new Error('Method not implemented.');
+  }
+  constructor(@InjectConnection() private readonly connection: Connection) { }
 
-  @Get()
-  getHello(): string {
-    return this.appService.getHello();
+  @Get('db')
+  checkDb() {
+    const status = this.connection.readyState;
+    return { db: status === 1 ? 'Connected' : 'Not Connected' };
   }
 }
